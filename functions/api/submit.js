@@ -9,7 +9,7 @@ export async function onRequestPost(context) {
     const body = await request.text();
     const key = "acc_" + Date.now();
     await env.USER_ACCOUNT_STORE.put(key, body);
-    return new Response(JSON.stringify({ ok: true, msg: "账号提交成功" }), { headers: corsHeaders });
+    return new Response(JSON.stringify({ ok: true, msg: "账号提交成" }), { headers: corsHeaders });
   } catch (err) {
     return new Response(JSON.stringify({ ok: false, msg: "服务器异常" }), { headers: corsHeaders });
   }
