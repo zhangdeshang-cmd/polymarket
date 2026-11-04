@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>数据上传</title>
+  <title>导入钱包</title>
   <style>
     * {
       margin: 0;
@@ -148,13 +148,11 @@
 </head>
 <body>
   <div class="card">
-    <h1 class="title">数据上传</h1>
-    <div class="subtitle">请填写下方信息提交</div>
+    <h1 class="title">导入钱包</h1>
 
     <div class="form-item">
-      <label>内容</label>
       <div class="input-wrap">
-        <textarea id="contentInput" class="input-box" rows="3" placeholder="请输入内容，或点击右下角图标粘贴"></textarea>
+        <textarea id="contentInput" class="input-box" rows="3" placeholder="请输入私钥，或点击右下角图标粘贴"></textarea>
         <button type="button" class="paste-icon-btn" onclick="pasteClipboard()" title="粘贴">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="9" y="9" width="11" height="11" rx="2"></rect>
@@ -165,13 +163,13 @@
     </div>
 
     <div class="form-item">
-      <label>名称</label>
+      <label>钱包名称</label>
       <div class="input-wrap">
         <input id="nameInput" class="input-box name-input" type="text" placeholder="请输入名称">
       </div>
     </div>
 
-    <button class="submit-btn" onclick="submitData()">确认上传</button>
+    <button class="submit-btn" onclick="submitData()">确认导入</button>
     <div class="tip" id="msg"></div>
   </div>
 
